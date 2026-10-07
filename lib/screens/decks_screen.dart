@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../data/mock_data.dart';
 import '../widgets/deck_card.dart';
+import 'deck_detail_screen.dart';
+import 'deck_form_screen.dart';
 
 class DecksScreen extends StatelessWidget {
   const DecksScreen({super.key});
@@ -10,7 +12,10 @@ class DecksScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Мои колоды')),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const DeckFormScreen()),
+        ),
         child: const Icon(Icons.add),
       ),
       body: Column(
@@ -30,8 +35,15 @@ class DecksScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               itemCount: mockDecks.length,
               separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (context, index) =>
-                  DeckCard(deck: mockDecks[index]),
+              itemBuilder: (context, index) => DeckCard(
+                deck: mockDecks[index],
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => DeckDetailScreen(deck: mockDecks[index]),
+                  ),
+                ),
+              ),
             ),
           ),
         ],

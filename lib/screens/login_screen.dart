@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'decks_screen.dart';
+import 'home_shell.dart';
+
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -54,7 +55,7 @@ class LoginScreen extends StatelessWidget {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const DecksScreen(),
+                        builder: (_) => const HomeShell(),
                       ),
                     );
                   },
