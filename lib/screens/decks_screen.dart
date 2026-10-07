@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../data/mock_data.dart';
 import '../widgets/deck_card.dart';
-import 'deck_detail_screen.dart';
-import 'deck_form_screen.dart';
 
 class DecksScreen extends StatelessWidget {
   const DecksScreen({super.key});
@@ -12,10 +11,7 @@ class DecksScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Мои колоды')),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const DeckFormScreen()),
-        ),
+        onPressed: () => context.push('/decks/new'),
         child: const Icon(Icons.add),
       ),
       body: Column(
@@ -35,15 +31,13 @@ class DecksScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               itemCount: mockDecks.length,
               separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (context, index) => DeckCard(
-                deck: mockDecks[index],
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => DeckDetailScreen(deck: mockDecks[index]),
-                  ),
-                ),
-              ),
+              itemBuilder: (context, index) {
+                final deck = mockDecks[index];
+                return DeckCard(
+                  deck: deck,
+                  onTap: () => context.push('/decks/${deck.id}'),
+                );
+              },
             ),
           ),
         ],

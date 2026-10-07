@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/login_screen.dart';
+import 'router.dart';
 
 void main() => runApp(const QuickCardsApp());
 
@@ -8,7 +8,7 @@ class QuickCardsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'QuickCards',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF3F51B5)),
@@ -16,7 +16,7 @@ class QuickCardsApp extends StatelessWidget {
           titleLarge: TextStyle(fontWeight: FontWeight.w600),
         ),
       ),
-      home: const LoginScreen(),
+      routerConfig: router,
     );
   }
 }

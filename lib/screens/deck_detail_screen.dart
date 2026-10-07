@@ -1,35 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../data/mock_data.dart';
 import '../widgets/stat_tile.dart';
-import 'card_form_screen.dart';
-import 'deck_form_screen.dart';
-import 'import_screen.dart';
-import 'review_screen.dart';
 
 class DeckDetailScreen extends StatelessWidget {
-  final Deck deck;
+  final int id;
 
-  const DeckDetailScreen({super.key, required this.deck});
+  const DeckDetailScreen({super.key, required this.id});
 
-  void _open(BuildContext context, Widget screen) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
+  Future<void> _confirmDelete(BuildContext context, Deck deck) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        title: const Text('Удалить колоду?'),
+        content: Text('Колода «${deck.name}» и все её карточки будут удалены.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx, false),
+            child: const Text('Отмена'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogCtx, true),
+            child: const Text('Удалить'),
+          ),
+        ],
+      ),
+    );
+    if (ok == true && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Колода «${deck.name}» удалена')),
+      );
+      context.pop();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final deck = mockDecks.firstWhere((d) => d.id == id);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(deck.name),
         actions: [
           IconButton(
-            onPressed: () => _open(context, DeckFormScreen(deck: deck)),
+            onPressed: () => context.push('/decks/${deck.id}/edit'),
             icon: const Icon(Icons.edit_outlined),
           ),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.delete_outline)),
+          IconButton(
+            onPressed: () => _confirmDelete(context, deck),
+            icon: const Icon(Icons.delete_outline),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _open(context, const CardFormScreen()),
+        onPressed: () => context.push('/decks/${deck.id}/cards/new'),
         child: const Icon(Icons.add),
       ),
       body: ListView(
@@ -50,13 +74,13 @@ class DeckDetailScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           FilledButton.icon(
-            onPressed: () => _open(context, const ReviewScreen()),
+            onPressed: () => context.push('/decks/${deck.id}/review'),
             icon: const Icon(Icons.play_arrow),
             label: const Text('Начать повторение'),
           ),
           const SizedBox(height: 8),
           OutlinedButton.icon(
-            onPressed: () => _open(context, const ImportScreen()),
+            onPressed: () => context.push('/decks/${deck.id}/import'),
             icon: const Icon(Icons.upload_file),
             label: const Text('Импорт карточек'),
           ),
@@ -69,7 +93,8 @@ class DeckDetailScreen extends StatelessWidget {
                 title: Text(card.front),
                 subtitle: Text(card.back),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () => _open(context, CardFormScreen(card: card)),
+                onTap: () =>
+                    context.push('/decks/${deck.id}/cards/${card.id}'),
               ),
             ),
         ],
