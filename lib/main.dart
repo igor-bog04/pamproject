@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/decks_screen.dart';
+import 'screens/login_screen.dart';
 
 void main() => runApp(const QuickCardsApp());
 
@@ -16,7 +16,7 @@ class QuickCardsApp extends StatelessWidget {
           titleLarge: TextStyle(fontWeight: FontWeight.w600),
         ),
       ),
-      home: const DecksScreen(),
+      home: const LoginScreen(),
     );
   }
 }
