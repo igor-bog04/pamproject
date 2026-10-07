@@ -20,6 +20,29 @@ class QuickCardsApp extends StatelessWidget {
   }
 }
 
+// Временная модель колоды — пока просто класс с полями,
+// позже (на L4) заменим на настоящую модель с Repository
+class Deck {
+  final String name;
+  final String subject;
+  final int cardCount;
+  final int dueToday;
+
+  const Deck({
+    required this.name,
+    required this.subject,
+    required this.cardCount,
+    required this.dueToday,
+  });
+}
+
+// "Зашитые" тестовые данные — временно, вместо реального backend
+const List<Deck> mockDecks = [
+  Deck(name: 'Английский A2', subject: 'Языки', cardCount: 48, dueToday: 12),
+  Deck(name: 'Формулы по физике', subject: 'Физика', cardCount: 25, dueToday: 5),
+  Deck(name: 'История Молдовы', subject: 'История', cardCount: 60, dueToday: 0),
+];
+
 class DecksScreen extends StatelessWidget {
   const DecksScreen({super.key});
 
@@ -29,8 +52,24 @@ class DecksScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Мои колоды'),
       ),
-      body: const Center(
-        child: Text('Здесь будет список колод'),
+      body: ListView.builder(
+        itemCount: mockDecks.length,
+        itemBuilder: (context, index) {
+          final deck = mockDecks[index];
+          return ListTile(
+            title: Text(deck.name),
+            subtitle: Text('${deck.subject} · ${deck.cardCount} карточек'),
+            trailing: deck.dueToday > 0
+                ? CircleAvatar(
+                    radius: 14,
+                    child: Text(
+                      '${deck.dueToday}',
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  )
+                : null,
+          );
+        },
       ),
     );
   }
