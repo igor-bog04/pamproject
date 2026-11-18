@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../data/mock_data.dart';
+import '../data/deck.dart';        // стало
 import 'due_badge.dart';
 
 class DeckCard extends StatelessWidget {
