@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../data/mock_data.dart';
+import 'package:provider/provider.dart';
+import '../models/stats_model.dart';
+import '../widgets/error_view.dart';
 import '../widgets/stat_tile.dart';
 
 class StatsScreen extends StatelessWidget {
@@ -7,13 +9,18 @@ class StatsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reviewed = mockSessions.fold<int>(0, (sum, s) => sum + s.reviewed);
-    final correct = mockSessions.fold<int>(0, (sum, s) => sum + s.correct);
-    final accuracy = (correct * 100 / reviewed).round();
+    final model = context.watch<StatsModel>();
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Статистика')),
-      body: ListView(
+    final Widget body;
+    if (model.isLoading) {
+      body = const Center(child: CircularProgressIndicator());
+    } else if (model.error != null) {
+      body = ErrorView(
+        message: model.error!,
+        onRetry: () => context.read<StatsModel>().load(),
+      );
+    } else {
+      body = ListView(
         padding: const EdgeInsets.all(16),
         children: [
           Card(
@@ -22,9 +29,9 @@ class StatsScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  StatTile(label: 'Сессий', value: '${mockSessions.length}'),
-                  StatTile(label: 'Повторено', value: '$reviewed'),
-                  StatTile(label: 'Правильно', value: '$accuracy%'),
+                  StatTile(label: 'Сессий', value: '${model.sessions.length}'),
+                  StatTile(label: 'Повторено', value: '${model.reviewed}'),
+                  StatTile(label: 'Правильно', value: '${model.accuracy}%'),
                 ],
               ),
             ),
@@ -33,7 +40,7 @@ class StatsScreen extends StatelessWidget {
           Text('История сессий',
               style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
-          for (final s in mockSessions)
+          for (final s in model.sessions)
             Card(
               child: ListTile(
                 title: Text(s.deckName),
@@ -45,7 +52,9 @@ class StatsScreen extends StatelessWidget {
               ),
             ),
         ],
-      ),
-    );
+      );
+    }
+
+    return Scaffold(appBar: AppBar(title: const Text('Статистика')), body: body);
   }
 }

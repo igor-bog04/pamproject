@@ -47,26 +47,29 @@ final router = GoRouter(
                     },
                   ),
                   GoRoute(
-                    path: 'import',
-                    builder: (context, state) => const ImportScreen(),
-                  ),
+        path: 'import',
+          builder: (context, state) => ImportScreen(
+                  deckId: int.parse(state.pathParameters['id']!),
+                     ),
+                      ),
                   GoRoute(
                     path: 'review',
                     builder: (context, state) => const ReviewScreen(),
                   ),
                   // 'cards/new' ДО 'cards/:cardId'
-                  GoRoute(
-                    path: 'cards/new',
-                    builder: (context, state) => const CardFormScreen(),
-                  ),
-                  GoRoute(
-                    path: 'cards/:cardId',
-                    builder: (context, state) {
-                      final cardId =
-                          int.parse(state.pathParameters['cardId']!);
-                      return CardFormScreen(cardId: cardId);
-                    },
-                  ),
+               GoRoute(
+  path: 'cards/new',
+  builder: (context, state) => CardFormScreen(
+    deckId: int.parse(state.pathParameters['id']!),
+  ),
+),
+                GoRoute(
+  path: 'cards/:cardId',
+  builder: (context, state) => CardFormScreen(
+    deckId: int.parse(state.pathParameters['id']!),
+    cardId: int.parse(state.pathParameters['cardId']!),
+  ),
+),
                 ],
               ),
             ],
